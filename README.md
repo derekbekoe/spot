@@ -9,7 +9,7 @@ A demo instance.
 ```bash
 docker build instance-1 -t debekoe.azurecr.io/spot-instance-1:0.0.1
 
-docker run -d -p 5001:1000 -e PORT=1000 -e INSTANCE_TOKEN=XXXX debekoe.azurecr.io/spot-instance-1:0.0.1
+docker run -d -p 7001:1000 -e PORT=1000 -e INSTANCE_TOKEN=XXXX debekoe.azurecr.io/spot-instance-1:0.0.1
 
 docker push debekoe.azurecr.io/spot-instance-1:0.0.1
 ```
@@ -29,4 +29,8 @@ az container create --resource-group $RG --name $SN --image $IMG --cpu 1 --memor
 
 0.0.2 - Non-SSL version. Works with the console
 
-0.0.3 - Getting file watcher to work
+0.0.3 - Getting file watcher to work with simple console.log
+
+0.0.4 - Getting file watcher to work with ws endpoint
+
+0.0.5 - Can get socket data in VS Code extension

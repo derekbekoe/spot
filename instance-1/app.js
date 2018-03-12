@@ -8,11 +8,6 @@ var expressWs = require('express-ws')(app);
 
 var chokidar = require('chokidar');
 
-// One-liner for current directory, ignores .dotfiles
-chokidar.watch('/root', {ignored: /(^|[\/\\])\../, ignorePermissionErrors: true}).on('all', (event, path) => {
-  console.log(event, path);
-});
-
 var terminals = {};
 var logs = {};
 
@@ -77,6 +72,28 @@ app.post('/terminals/:pid/size', requiresValidToken, function (req, res) {
   term.resize(cols, rows);
   console.log('Resized terminal ' + pid + ' to ' + cols + ' cols and ' + rows + ' rows.');
   res.end();
+});
+
+app.ws('/files', function(ws, req) {
+  if (req.query.token == instanceToken) {
+    var watcher = chokidar.watch('/root', {ignored: /(^|[\/\\])\../, ignorePermissionErrors: true}).on('all', (event, path) => {
+      console.log(event, path);
+      data = {event: event, path: path};
+      try {
+        ws.send(JSON.stringify(data));
+      } catch (ex) {
+        console.error(ex);
+        // The WebSocket is not open, ignore
+      }
+    });
+    console.log('Connected to file watcher');
+    ws.on('close', function () {
+      watcher.close();
+      console.log('Closed file watcher');
+    });
+  } else {
+    ws.close();
+  }
 });
 
 app.ws('/terminals/:pid', function (ws, req) {

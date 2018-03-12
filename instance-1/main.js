@@ -35,8 +35,6 @@ function createTerminal() {
 
     term.open(terminalContainer, true);
     term.writeln('Welcome!');
-    term.writeln("Use 'git log' to view commit information.");
-    term.writeln("Use 'refresh' to clone & build the CLI with new commits.");
     term.fit();
 
     setTimeout(() => {
