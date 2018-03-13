@@ -3,13 +3,18 @@ var express = require('express');
 var os = require('os');
 var pty = require('node-pty');
 
+var http = require('http');
+var https = require('https');
+var expressWs = require('express-ws');
+
+  
 var app = express();
-var expressWs = require('express-ws')(app);
 
-var chokidar = require('chokidar');
+// var server = https.createServer(options, app);
+// var expressWsInstance = expressWs(app, server);
 
-var terminals = {};
-var logs = {};
+var terminals = {},
+    logs = {};
 
 var instanceToken = process.env.INSTANCE_TOKEN;
 
@@ -74,64 +79,6 @@ app.post('/terminals/:pid/size', requiresValidToken, function (req, res) {
   res.end();
 });
 
-app.ws('/file/:fileid', function(ws, req) {
-  if (req.query.token == instanceToken) {
-    var theFilePath = undefined;
-    var fileId = req.params.fileid;
-    ws.on('message', function(msg) {
-      try {
-        msg_obj = JSON.parse(msg);
-      } catch (e) {
-        msg_obj = undefined;
-      }
-      if (msg_obj && msg_obj.event === 'fileDownload') {
-        console.log('Received message', msg_obj);
-        if (msg_obj.event === 'fileDownload') {
-          console.log(msg_obj.path);
-          theFilePath = msg_obj.path;
-          fs.readFile(msg_obj.path, "utf8", function(err, data) {
-            ws.send(data);
-          });
-        }
-      } else {
-        // Must be a file for us to save.
-        fs.writeFile(theFilePath, msg, (err) => {
-          if (err) {
-            console.error("Error saving file", err);
-          }
-        });
-      }
-    });
-    ws.on('close', function () {
-      console.log('Closed');
-    });
-  } else {
-    ws.close();
-  }
-});
-
-app.ws('/files', function(ws, req) {
-  if (req.query.token == instanceToken) {
-    var watcher = chokidar.watch('/root', {ignored: /(^|[\/\\])\../, ignorePermissionErrors: true}).on('all', (event, path) => {
-      console.log(event, path);
-      data = {event: event, path: path};
-      try {
-        ws.send(JSON.stringify(data));
-      } catch (ex) {
-        console.error(ex);
-        // The WebSocket is not open, ignore
-      }
-    });
-    console.log('Connected to file watcher');
-    ws.on('close', function () {
-      watcher.close();
-      console.log('Closed file watcher');
-    });
-  } else {
-    ws.close();
-  }
-});
-
 app.ws('/terminals/:pid', function (ws, req) {
   if (req.query.token == instanceToken) {
     var term = terminals[parseInt(req.params.pid)];
@@ -164,5 +111,24 @@ app.ws('/terminals/:pid', function (ws, req) {
 var port = process.env.PORT || 3000,
     host = os.platform() === 'win32' ? '127.0.0.1' : '0.0.0.0';
 
-console.log('App listening to http://' + host + ':' + port);
-app.listen(port, host);
+// console.log('App listening to http://' + host + ':' + port);
+// app.listen(port, host);
+
+http.createServer(app).listen(80, host);
+
+
+var certdir = '/etc/letsencrypt/live/promptws-debekoe-1.westus.azurecontainer.io'
+var privkey = certdir + '/privkey.pem';
+var certkey =  certdir + '/fullchain.pem';
+
+function attemptHttps() {
+    if (fs.existsSync(privkey) && fs.existsSync(privkey)) {
+        var options = {key: fs.readFileSync(privkey), cert: fs.readFileSync(certkey)};
+        https.createServer(options, app).listen(443, host);
+    } else {
+        console.log('Cert files not ready. Waiting 2 secs.');
+        setTimeout(attemptHttps, 2000);
+    }
+}
+
+attemptHttps();

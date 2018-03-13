@@ -1,0 +1,1 @@
+echo 'About to run certbot'; certbot certonly --webroot --agree-tos -n -m $C_EMAIL -w /.certbot -d $C_DOMAIN
