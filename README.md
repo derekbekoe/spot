@@ -33,4 +33,6 @@ az container create --resource-group $RG --name $SN --image $IMG --cpu 1 --memor
 
 0.0.4 - Getting file watcher to work with ws endpoint
 
-0.0.5 - Can get socket data in VS Code extension
+0.0.5 - Can get directory listing and syncing
+
+0.0.6 - Can get files through socket

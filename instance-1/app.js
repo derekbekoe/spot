@@ -74,6 +74,42 @@ app.post('/terminals/:pid/size', requiresValidToken, function (req, res) {
   res.end();
 });
 
+app.ws('/file/:fileid', function(ws, req) {
+  if (req.query.token == instanceToken) {
+    var theFilePath = undefined;
+    var fileId = req.params.fileid;
+    ws.on('message', function(msg) {
+      try {
+        msg_obj = JSON.parse(msg);
+      } catch (e) {
+        msg_obj = undefined;
+      }
+      if (msg_obj) {
+        console.log('Received message', msg_obj);
+        if (msg_obj.event === 'fileDownload') {
+          console.log(msg_obj.path);
+          theFilePath = msg_obj.path;
+          fs.readFile(msg_obj.path, "utf8", function(err, data) {
+            ws.send(data);
+          });
+        }
+      } else {
+        // Must be a file for us to save.
+        fs.writeFile(theFilePath, msg, (err) => {
+          if (err) {
+            console.error("Error saving file", err);
+          }
+        });
+      }
+    });
+    ws.on('close', function () {
+      console.log('Closed');
+    });
+  } else {
+    ws.close();
+  }
+});
+
 app.ws('/files', function(ws, req) {
   if (req.query.token == instanceToken) {
     var watcher = chokidar.watch('/root', {ignored: /(^|[\/\\])\../, ignorePermissionErrors: true}).on('all', (event, path) => {
