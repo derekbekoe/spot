@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y git && apt-get install -y curl && git c
 # dotnetcore
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg; mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg; sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'; apt-get install -y apt-transport-https; apt-get update; apt-get install -y dotnet-sdk-2.1.4
 
+# Azure CLI
+RUN sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ xenial main" > /etc/apt/sources.list.d/azure-cli.list'; apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893; apt-get install -y apt-transport-https; apt-get update && apt-get install -y azure-cli
+
 # Override demo files with our own
 COPY app.js main.js index.html style.css favicon.ico package.json /xtermjs/demo/
 
