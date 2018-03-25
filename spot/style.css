@@ -1,0 +1,34 @@
+body {
+    font-family: helvetica, sans-serif, arial;
+    font-size: 1em;
+    color: #111;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+#terminal-container {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0;
+    position: fixed;
+    top: 0;
+}
+
+#terminal-container .terminal {
+    background-color: #111;
+    color: #fafafa;
+    padding: 2px;
+    height: 100%;
+}
+
+#terminal-container .terminal:focus .terminal-cursor {
+    background-color: #fafafa;
+}
+
+.terminal .xterm-viewport {
+    background-color: #111;
+}

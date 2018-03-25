@@ -1,0 +1,18 @@
+{
+    "name": "spot-host",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "chokidar": "^2.0.2",
+        "ejs": "^2.5.7",
+        "express": "^4.16.3",
+        "express-ws": "^3.0.0",
+        "node-pty": "^0.7.4",
+        "xterm": "^3.2.0",
+        "gulp": "3.9.1"
+    },
+    "scripts": {
+        "build": "gulp build"
+    },
+    "devDependencies": {}
+}
