@@ -2,6 +2,8 @@ var fs = require('fs')
 var express = require('express');
 var os = require('os');
 var pty = require('node-pty');
+var path = require('path');
+require('ejs'); // allows 'pkg' to include this dependency. see https://github.com/zeit/pkg#config
 
 var app = express();
 var expressWs = require('express-ws')(app);
@@ -20,7 +22,7 @@ if (!instanceToken) {
 
 app.set('view engine', 'ejs');
 
-app.use('/build', express.static(__dirname + '/node_modules/xterm/dist'));
+app.use('/build', express.static(path.join(__dirname, 'node_modules', 'xterm', 'dist')));
 
 var requiresValidToken = function (req, res, next) {
   if (req.query.token == instanceToken) {
@@ -37,11 +39,11 @@ app.get('/', requiresValidToken, function(req, res){
 });
 
 app.get('/favicon.ico', function(req, res){
-  res.sendFile(__dirname + '/favicon.ico');
+  res.sendFile(path.join(__dirname, '/favicon.ico'));
 });
 
 app.get('/style.css', function(req, res){
-  res.sendFile(__dirname + '/style.css');
+  res.sendFile(path.join(__dirname, '/style.css'));
 });
 
 app.get('/main.js', requiresValidToken, function(req, res){
