@@ -1,12 +1,15 @@
 {
     "name": "spot-host",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "private": true,
     "bin" : {
         "spot-host" : "app.js"
     },
     "pkg": {
-        "assets": ["node_modules/node-pty/build/Release/pty.node"]
+        "assets": [
+            "node_modules/node-pty/build/Release/pty.node",
+            "views/**"
+        ]
     },
     "dependencies": {
         "chokidar": "^2.0.2",

@@ -35,7 +35,7 @@ var requiresValidToken = function (req, res, next) {
 app.get('/health-check', requiresValidToken, (req, res) => res.sendStatus(200));
 
 app.get('/', requiresValidToken, function(req, res){
-  res.render('index', {instanceToken: instanceToken});
+  res.render(path.join(__dirname, 'views', 'index'), {instanceToken: instanceToken});
 });
 
 app.get('/favicon.ico', function(req, res){
@@ -47,7 +47,7 @@ app.get('/style.css', function(req, res){
 });
 
 app.get('/main.js', requiresValidToken, function(req, res){
-  res.render('main', {instanceToken: instanceToken});
+  res.render(path.join(__dirname, 'views', 'main'), {instanceToken: instanceToken});
 });
 
 app.post('/terminals', requiresValidToken, function (req, res) {
