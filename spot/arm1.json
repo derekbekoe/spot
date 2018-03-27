@@ -3,11 +3,12 @@
   "contentVersion": "1.0.0.0",
   "parameters": {},
   "variables": {
-    "spotName": "spot-debekoe-arm-015",
-    "container1name": "client",
+    "spotName": "spot-1",
     "container1image": "ubuntu:xenial",
-    "container2name": "certbot",
-    "container2image": "certbot/certbot"
+    "instanceToken": "ABCD",
+    "container1name": "client",
+    "container2image": "certbot/certbot",
+    "container2name": "certbot"
   },
   "resources": [
     {
@@ -41,13 +42,16 @@
                   "port": 5000
                 },
                 {
+                  "port": 6006
+                },
+                {
                   "port": 8080
                 }
               ],
               "environmentVariables": [
                 {
                   "name": "PORT",
-                  "value": "80"
+                  "value": "443"
                 },
                 {
                   "name": "USE_SSL",
@@ -55,7 +59,7 @@
                 },
                 {
                   "name": "INSTANCE_TOKEN",
-                  "value": "XXXX"
+                  "value": "[variables('instanceToken')]"
                 },
                 {
                   "name": "C_DOMAIN",
@@ -93,8 +97,7 @@
             "properties": {
               "image": "[variables('container2image')]",
               "command": [
-                "certbot", "certonly", "--webroot", "--agree-tos", "-n",
-                "-m", "derek@derekbekoe.com", "-w", "/.certbot", "-d", "[concat(variables('spotName'), '.westus.azurecontainer.io')]"
+                "/bin/sh", "-c", "/.spot/certbot_start.sh"
               ],
               "resources": {
                 "requests": {
@@ -102,7 +105,22 @@
                   "memoryInGb": 1.5
                 }
               },
+              "environmentVariables": [
+                {
+                  "name": "C_DOMAIN",
+                  "value": "[concat(variables('spotName'), '.westus.azurecontainer.io')]"
+                },
+                {
+                  "name": "C_EMAIL",
+                  "value": "derek@derekbekoe.com"
+                }
+              ],
               "volumeMounts": [
+                {
+                  "name": "spot-host-mount",
+                  "mountPath": "/.spot",
+                  "readOnly": true
+                },
                 {
                   "name": "certbot-dir",
                   "mountPath": "/.certbot"
@@ -132,6 +150,10 @@
             {
               "protocol": "tcp",
               "port": "80"
+            },
+            {
+              "protocol": "tcp",
+              "port": "6006"
             },
             {
                 "protocol": "tcp",
