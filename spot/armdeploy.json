@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {},
   "variables": {
-    "spotName": "spot-1",
+    "spotName": "spot-tmp-debekoe-1",
     "container1image": "ubuntu:xenial",
     "instanceToken": "ABCD",
     "container1name": "client",
