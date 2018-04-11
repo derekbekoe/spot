@@ -3,9 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {},
   "variables": {
-    "spotName": "spot-tmp-debekoe-1",
+    "spotName": "debekoe-tmp-1",
     "container1image": "ubuntu:xenial",
-    "instanceToken": "ABCD",
+    "location": "westus",
+    "instanceToken": "XXXX",
     "container1name": "client",
     "container2image": "certbot/certbot",
     "container2name": "certbot"
@@ -15,7 +16,7 @@
       "name": "[variables('spotName')]",
       "type": "Microsoft.ContainerInstance/containerGroups",
       "apiVersion": "2018-02-01-preview",
-      "location": "westus",
+      "location": "[variables('location')]",
       "properties": {
         "containers": [
           {
@@ -63,7 +64,7 @@
                 },
                 {
                   "name": "C_DOMAIN",
-                  "value": "[concat(variables('spotName'), '.westus.azurecontainer.io')]"
+                  "value": "[concat(variables('spotName'), '.', variables('location'), '.azurecontainer.io')]"
                 },
                 {
                   "name": "ASPNETCORE_URLS",
@@ -97,7 +98,7 @@
             "properties": {
               "image": "[variables('container2image')]",
               "command": [
-                "/bin/sh", "-c", "/.spot/certbot_start.sh"
+                "/bin/sh", "-c", "/.spot/certbot.sh"
               ],
               "resources": {
                 "requests": {
@@ -108,7 +109,7 @@
               "environmentVariables": [
                 {
                   "name": "C_DOMAIN",
-                  "value": "[concat(variables('spotName'), '.westus.azurecontainer.io')]"
+                  "value": "[concat(variables('spotName'), '.', variables('location'), '.azurecontainer.io')]"
                 },
                 {
                   "name": "C_EMAIL",
