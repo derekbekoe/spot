@@ -19,4 +19,4 @@ jspm_packages/
 *.tgz
 
 # Spot build output directory
-spot/build
+build
