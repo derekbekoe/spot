@@ -9,6 +9,8 @@ var http = require('http');
 var https = require('https');
 var expressWs = require('express-ws');
 
+var app_info = require('./package.json');
+
 require('ejs'); // allows 'pkg' to include this dependency. see https://github.com/zeit/pkg#config
 
 const instanceToken = process.env.INSTANCE_TOKEN;
@@ -73,7 +75,17 @@ function initRealServer(serverCreateCallback) {
       res.sendStatus(401);
     }
   };
-  app.get('/health-check', requiresValidToken, (req, res) => res.sendStatus(200));
+  app.get('/health-check', requiresValidToken, (req, res) => {
+    res.json({
+      'name': app_info.name,
+      'version': app_info.version,
+      'platform': process.platform,
+      'uptime': process.uptime(),
+      'memory': process.memoryUsage(),
+      'cpu': process.cpuUsage(),
+      'arch': process.arch
+    });
+  });
   
   app.get('/', requiresValidToken, function(req, res){
     res.render(path.join(__dirname, 'views', 'index'), {instanceToken: instanceToken});
