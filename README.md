@@ -45,6 +45,8 @@ The following environment variables can be configured:
 | `INSTANCE_TOKEN`    | The token required to connect to the Spot Host.
 | `USE_SSL` | (optional) `'1'` if SSL should be usedl otherwise, don't use SSL.
 | `C_DOMAIN`  | (optional) The domain that SSL is provided for. Used in `/etc/letsencrypt/live/C_DOMAIN/[privkey.pem,fullchain.pem]` to find the certs.
+| `SPOT_FILE_WATCH_IGNORE_DOT_FILES`  | (optional) Set this to ignore .dotfiles for the file watcher. This hides those files from the VS Code file list. By default, no files are ignored.
+| `SPOT_FILE_WATCH_PATH`  | (optional) The path to watch and show in the VS Code file list.
 
 ## Developer Setup
 
