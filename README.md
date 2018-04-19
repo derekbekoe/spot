@@ -9,12 +9,12 @@ The Spot Host powers the [Spot VS Code extension](https://github.com/derekbekoe/
 - All endpoints require valid token otherwise 401 Unauthorized
 - HTTP & HTTPS available
 
-![Spot Host](doc/assets/spot_host1.png "Spot Host")
 *Image1: Spot host running*
-![Spot Host connected to with browser](doc/assets/spot_host2.png "Spot Host connected to with browser")
+![Spot Host](doc/assets/spot_host1.png "Spot Host")
 *Image2: Connecting to host in browser*
-![Spot Host connected to VS Code](doc/assets/spot_host3.png "Spot Host connected to VS Code")
+![Spot Host connected to with browser](doc/assets/spot_host2.png "Spot Host connected to with browser")
 *Image3: Connecting to host in VS Code*
+![Spot Host connected to VS Code](doc/assets/spot_host3.png "Spot Host connected to VS Code")
 
 ## Quickstart
 
