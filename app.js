@@ -9,13 +9,18 @@ var http = require('http');
 var https = require('https');
 var expressWs = require('express-ws');
 
+var app_info = require('./package.json');
+
 require('ejs'); // allows 'pkg' to include this dependency. see https://github.com/zeit/pkg#config
 
 const instanceToken = process.env.INSTANCE_TOKEN;
 const useSSL = process.env.USE_SSL;
+const fileWatcherIgnoreDotFiles = process.env.SPOT_FILE_WATCH_IGNORE_DOT_FILES || false;
+const fileWatcherWatchPath = process.env.SPOT_FILE_WATCH_PATH || process.cwd();
 
 var port = process.env.PORT || 3000;
 var host = os.platform() === 'win32' ? '127.0.0.1' : '0.0.0.0';
+
 
 if (!instanceToken) {
   console.error('ERROR: Instance token is not set!');
@@ -73,7 +78,21 @@ function initRealServer(serverCreateCallback) {
       res.sendStatus(401);
     }
   };
-  app.get('/health-check', requiresValidToken, (req, res) => res.sendStatus(200));
+  app.get('/health-check', requiresValidToken, (req, res) => {
+    res.json({
+      'name': app_info.name,
+      'version': app_info.version,
+      'platform': process.platform,
+      'uptime': process.uptime(),
+      'memory': process.memoryUsage(),
+      'cpu': process.cpuUsage(),
+      'arch': process.arch,
+      'spotInstanceToken': instanceToken,
+      'spotUseSSL': useSSL,
+      'spotFileWatcherIgnoreDotFiles': fileWatcherIgnoreDotFiles,
+      'spotFileWatcherWatchPath': fileWatcherWatchPath
+    });
+  });
   
   app.get('/', requiresValidToken, function(req, res){
     res.render(path.join(__dirname, 'views', 'index'), {instanceToken: instanceToken});
@@ -135,6 +154,8 @@ function initRealServer(serverCreateCallback) {
         }
         if (msg_obj && msg_obj.event === 'fileDownload') {
           console.log('Received message', msg_obj);
+          // If the actual file to be saved is json with key 'fileDownload', this will not work.
+          // Considering this as an edge case for now...
           if (msg_obj.event === 'fileDownload') {
             console.log(msg_obj.path);
             theFilePath = msg_obj.path;
@@ -161,14 +182,17 @@ function initRealServer(serverCreateCallback) {
 
   app.ws('/files', function(ws, req) {
     if (req.query.token == instanceToken) {
-      var watcher = chokidar.watch('/root', {ignored: /(^|[\/\\])\../, ignorePermissionErrors: true}).on('all', (event, path) => {
+      var watcher = chokidar.watch(fileWatcherWatchPath,
+                                   {ignored: (fileWatcherIgnoreDotFiles ? /(^|[\/\\])\../ : null),
+                                    ignorePermissionErrors: true}
+                                  ).on('all', (event, path) => {
         console.log(event, path);
         data = {event: event, path: path};
         try {
           ws.send(JSON.stringify(data));
         } catch (ex) {
-          console.error(ex);
           // The WebSocket is not open, ignore
+          console.error(ex);
         }
       });
       console.log('Connected to file watcher');
