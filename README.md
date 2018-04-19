@@ -57,7 +57,27 @@ Looking to contribute or debug yourself?
 5. Run `node app.js`
 
 ### Packaging
-Build package: `node_modules/.bin/pkg --out-path build package.json`  
+
+**Fix up pty.node**
+
+In `node_modules/node-pty/lib/unixTerminal.js`, search for `pty.node` and modify that line:
+
+```js
+var pty = process.pkg ? require(path.join(path.dirname(process.execPath), 'pty.node')) : require(path.join('..', 'build', 'Release', 'pty.node'));
+```
+
+This will allow the server to work after being packaged with [pkg](https://github.com/zeit/pkg).
+
+Copy `pty.node` from `node_modules/node-pty/build/Release/pty.node` to the same directory as the spot host (see [pkg native-addons](https://github.com/zeit/pkg#native-addons)).  
+
+**Build**
+
+Build package: `node_modules/.bin/pkg --out-path build package.json`
+
+**Run**
+
+Set the required environment variables.
+
 Run the Spot Host: `./build/spot-host-macos` or `./build/spot-host-linux`  
 
 ## Release History
