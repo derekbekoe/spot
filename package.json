@@ -2,8 +2,8 @@
     "name": "spot-host",
     "version": "0.2.0",
     "private": true,
-    "bin" : {
-        "spot-host" : "app.js"
+    "bin": {
+        "spot-host": "app.js"
     },
     "pkg": {
         "assets": [
@@ -20,8 +20,7 @@
         "xterm": "^3.2.0",
         "gulp": "3.9.1"
     },
-    "scripts": {
-    },
+    "scripts": {},
     "devDependencies": {
         "pkg": "^4.3.0"
     }

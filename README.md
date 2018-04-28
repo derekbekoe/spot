@@ -23,8 +23,8 @@ A few steps to get you started right away:
 **Download latest Spot Host**
 ```
 # For linux
-wget https://vscodespot.blob.core.windows.net/preview/spot-host
-wget https://vscodespot.blob.core.windows.net/preview/pty.node
+wget https://github.com/derekbekoe/spot/releases/download/v0.2.0/spot-host
+wget https://github.com/derekbekoe/spot/releases/download/v0.2.0/pty.node
 ```
 
 **Start the host**
@@ -43,7 +43,7 @@ The following environment variables can be configured:
 | --- |---|
 | `PORT`     | The port to run the host on.
 | `INSTANCE_TOKEN`    | The token required to connect to the Spot Host.
-| `USE_SSL` | (optional) `'1'` if SSL should be usedl otherwise, don't use SSL.
+| `USE_SSL` | (optional) `'1'` if SSL should be used otherwise, don't use SSL.
 | `C_DOMAIN`  | (optional) The domain that SSL is provided for. Used in `/etc/letsencrypt/live/C_DOMAIN/[privkey.pem,fullchain.pem]` to find the certs.
 | `SPOT_FILE_WATCH_IGNORE_DOT_FILES`  | (optional) Set this to ignore .dotfiles for the file watcher. This hides those files from the VS Code file list. By default, no files are ignored.
 | `SPOT_FILE_WATCH_PATH`  | (optional) The path to watch and show in the VS Code file list.
