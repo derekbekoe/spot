@@ -1,3 +1,9 @@
+## :construction: This project has been archived
+
+Read about Cloud Hosted Developer Environments in this blog post - [Intelligent Productivity and Collaboration, from Anywhere](https://devblogs.microsoft.com/visualstudio/intelligent-productivity-and-collaboration-from-anywhere/).
+
+---
+
 # Spot Host: The host that powers the VS Code extension
 
 This repository is for the Spot Host.
